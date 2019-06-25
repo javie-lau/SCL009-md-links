@@ -1,23 +1,49 @@
-
+const path = require("path");
+const fs = require("fs");//exportando fs
+const marked= require('marked');//exportando marked que es el que extrae link
+const util = require('util');
+//node ./aprendiendo.js ./README.md
 process.argv.forEach((option, index) => {//vemos posiciones de lo que escribe el ususrio
   console.log("index:", index, "valor:", option);
 });
 
-let path_to_file = process.argv[2];//ruta
+let path_to_file = process.argv[2];//ruta, process.argv llama lo que escribe el usuario en consola
+path_to_file = path.resolve(path_to_file);// la vuelve absoluta
 let option_1 = process.argv[3];//deberi ser validate
 let option_2 = process.argv[4];//deberia ser stats
 
-// console.log("path:", path_to_file);
-// console.log("option 1:", option_1);
-// console.log("option 2:", option_2);
 
-const fs = require("fs");//exportando fs
-const marked= require('marked');//exportando marked que es el que extrae link
+/* me dice si la ruta es un directorio y isDirectory se tiene que convertir a asincrona a través de async*/ 
+const isDirectory = async path_to_file=>{
+  try {
+    return(await util.promisify(fs.lstat)(path_to_file)).isDirectory()
+  }
+  catch(e){
+    console.log(e);
+    return false
+  }
+  }
+/*aqui le preguntamos si es directorio o archivo y si es directorio aplicamos funcion de filehound y si no funcion de fs */
+   function pathUser (path){
+     isDirectory(path)
+      .then(res => {
+        console.log(res);
+        isdir = res;
+        if(isdir){
+          getMdFilehound(path)
+        } else {
+          links(path)
+         console.log("ES FALSE");
+        }
+      })
+  }
 
+  pathUser(path_to_file);
 
-const links = (path_to_file) =>{//llamamos la variable que contiene la ruta
-    fs.readFile(path_to_file,"utf8", (err,data) =>{
-      console.log("Ruta o archivo md", path_to_file);
+//funcion f.s para leer archivo.md
+ const links = (path) =>{//llamamos la variable que contiene la ruta
+    fs.readFile(path,"utf8", (err,data) =>{
+      console.log("Ruta o archivo md", path);
       if(err){
         throw err;
       }
@@ -42,29 +68,30 @@ const links = (path_to_file) =>{//llamamos la variable que contiene la ruta
   //console.log(links('./readme.md'));
   }
 
-  links(path_to_file);
+ // links(path_to_file);
 
+  const FileHound = require("filehound");
 
+  function getMdFilehound(path){
 
-/* array1.forEach (function(element){
-  console.log(element)
-}) */
-// console.log(process.argv);
-// process.argv.forEach((val,index)=> {
-//   console.log(`${index}: ${val}`);
-// })
-
-
+  const files = FileHound.create()
+    .paths(path_to_file)
+    .ext('md')
+    .find();
   
-
-/*let readme = fs.readFileSync('README.md','utf-8');
-console.log(readme);
-const path = require("path");
-links.forEach(function (element) {
-    fetch(element)
-  .then((res) => {
-      console.log(res.url + "-" + res.status + "==>" + res.statusText);
-  }
-}
-
-let markdownLinkExtractor = require('markdown-link-extractor');*/
+     
+  let arrayFilehound = [];
+  files
+    .then(res => {
+      arrayFilehound = res;
+      arrayFilehound.forEach(element => {
+        links(element);
+        
+        
+      });
+      
+        
+      });
+  };   
+   getMdFilehound();
+  
