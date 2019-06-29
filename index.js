@@ -155,27 +155,34 @@ const links = (path) =>{//llamamos la variable que contiene la ruta
   function linkStats(links) {
     let countLink =[];
        if(stats===true){
-     countLink= links.length;
+       const LinkIterab = links.map(el=> {
+        return el.href
+       });
+       countLink= LinkIterab.length;
       console.log('Existen',countLink, 'link en tu .md');
-      let cont={};
-      links.forEach(el=>{
-        let statusCount ={};
-        fetch(el.href)
-        .then(res=>{
-          let stats= res.status
-          console.log('este es', stats)
-          cont= stats.length;
-          console.log('cont aqui',cont);
-         })
+      let linkset =[...new Set(LinkIterab)].length;
+      //let linkUnique =linkset.length
+
+      console.log('Existen',linkset,'únicos en tu md');
+      // let cont={};
+      // links.forEach(el=>{
+      //   let statusCount ={};
+      //   fetch(el.href)
+      //   .then(res=>{
+      //     let stats= res.status
+      //     console.log('este es', stats)
+      //     cont= stats.length;
+      //     console.log('cont aqui',cont);
+      //    })
           // statusCount = statusCount.length;
           
           // }
        
-        .catch(err=>{
-          let countErr = err.length;
-         // console.log(countErr);
-        })
-      })
+      //   .catch(err=>{
+      //     let countErr = err.length;
+      //    // console.log(countErr);
+      //   })
+      // })
      
        }
     
