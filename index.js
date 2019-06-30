@@ -3,9 +3,10 @@ const fs = require("fs");//exportando fs
 const marked= require('marked');//exportando marked que es el que extrae link
 const util = require('util');
 const fetch= require('node-fetch');
+let chalk = require('chalk');
 //node ./aprendiendo.js ./README.md
 process.argv.forEach((option, index) => {//vemos posiciones de lo que escribe el ususrio
-  console.log("index:", index, "valor:", option);
+ // console.log("index:", index, "valor:", option);
 });
 
 let path_to_file = process.argv[2];//ruta, process.argv llama lo que escribe el usuario en consola
@@ -37,7 +38,7 @@ const isDirectory = async path_to_file=>{
     return(await util.promisify(fs.lstat)(path_to_file)).isDirectory()
   }
   catch(e){
-    console.log(e);
+   // console.log(e);
     return false
   }
   }
@@ -51,7 +52,7 @@ const isDirectory = async path_to_file=>{
           getMdFilehound(path)
         } else {
           links(path)
-         console.log("ES FALSE");
+        // console.log("ES FALSE");
         }
       })
   }
@@ -128,67 +129,46 @@ const links = (path) =>{//llamamos la variable que contiene la ruta
    getMdFilehound();
   
    function linkValidate(links){
-     let ok =[];
+     let status =[];
+     let urls =[];
     links.forEach(element => {
      if(validate === false && stats === false){
-      console.log('false', element.file, element.href, element.text);
+      console.log('Elementos de tu .md', element.file, element.href, element.text);
       }
         if(validate=== true){
          fetch(element.href)
         .then (res =>{
+
             
-            console.log(res.url, res.status, res.statusText);
-            ok= res.status;
-            console.log('este es ok', ok);
+            //console.log(res.url, res.status, res.statusText);
+            status= res.status;
+            urls = res.url;
+            console.log(chalk.green('Estos links están validados correctamente'),chalk.blue.bold( urls, status));
             
         })
         
         .catch(err=>{
-          console.log(err.message, err.code);
+          console.log(chalk.green('links con errores'),chalk.red.bold(err.message, err.code));
 
         })
     
       }
     })
   }
+  /** esta funcion cuenta los link totatel, links unicos y link rotos , itera los href a traves de el parametro links que viene de la const links a través de map() y luego con la propiedad new set  que almacena valores únicos y luego con filter creamos un nuevo array con las condiciones dadas  */
 
   function linkStats(links) {
     let countLink =[];
        if(stats===true){
-       const LinkIterab = links.map(el=> {
-        return el.href
-       });
+       const LinkIterab = links.map(el=> el.href);
        countLink= LinkIterab.length;
-      console.log('Existen',countLink, 'link en tu .md');
-      let linkset =[...new Set(LinkIterab)].length;
-      //let linkUnique =linkset.length
-
-      console.log('Existen',linkset,'únicos en tu md');
-      // let cont={};
-      // links.forEach(el=>{
-      //   let statusCount ={};
-      //   fetch(el.href)
-      //   .then(res=>{
-      //     let stats= res.status
-      //     console.log('este es', stats)
-      //     cont= stats.length;
-      //     console.log('cont aqui',cont);
-      //    })
-          // statusCount = statusCount.length;
-          
-          // }
-       
-      //   .catch(err=>{
-      //     let countErr = err.length;
-      //    // console.log(countErr);
-      //   })
-      // })
-     
+       let linkUnique =[...new Set(LinkIterab)].length;
+       let linkBroken = links.filter(elem=> elem.status === 0 || elem.status >= 400).length;
+       console.log (chalk.blue('Cantidad de links',chalk.underline.bold.yellow(countLink),'links únicos',chalk.underline.bold.yellow(linkUnique),'links rotos',chalk.underline.bold.yellow(linkBroken)));
        }
-    
-
-    
-  }
+      }
+       
+  
   
   /** aqui llamo a la funcion general md-link, convierto en promesas el resto me queda la duda
    *  con option ya que nose donde se usa, me falta hacer los export y los test.
