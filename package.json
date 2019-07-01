@@ -1,5 +1,5 @@
 {
-  "name": "mdlinks",
+  "name": "@laura_silva/mdlinks",
   "version": "0.1.0",
   "dependencies": {
     "babel-jest": "^24.8.0",

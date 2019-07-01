@@ -198,7 +198,7 @@ const mdLinks = (path, options) => {
                      }
                     })
                      .catch(err=>{
-                       console.log(err);
+                       reject(err);
 
                     })
                
