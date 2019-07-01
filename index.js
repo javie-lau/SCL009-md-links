@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const pathNode= require("path");
 const fs = require("fs");//exportando fs
 const marked= require('marked');//exportando marked que es el que extrae link
@@ -33,7 +35,7 @@ if(option_2==='--stats'){
 
 
 /* me dice si la ruta es un directorio y isDirectory se tiene que convertir a asincrona a través de async*/ 
-const isDirectory = async path_to_file=>{
+const isDirectory = async path_to_file=>{ //async convierte inmediatamente en una promesa y await hace creer que esat haciendo un funcionamiento sincrono 
   try {
     return(await util.promisify(fs.lstat)(path_to_file)).isDirectory()
   }
@@ -41,27 +43,28 @@ const isDirectory = async path_to_file=>{
    // console.log(e);
     return false
   }
+
   }
 /*aqui le preguntamos si es directorio o archivo y si es directorio aplicamos funcion de filehound y si no funcion de fs */
-   function pathUser (path){
-     isDirectory(path)
-      .then(res => {
-        console.log(res);
-        isdir = res;
-        if(isdir){
-          getMdFilehound(path)
-        } else {
-          links(path)
-        // console.log("ES FALSE");
-        }
-      })
-  }
+  //  function pathUser (path){
+  //    isDirectory(path)
+  //     .then(res => {
+  //       console.log(res);
+  //       isdir = res;
+  //       if(isdir){
+  //         getMdFilehound(path)
+  //       } else {
+  //         links(path)
+  //       // console.log("ES FALSE");
+  //       }
+  //     })
+  // }
 
-  pathUser(path_to_file);
+  // pathUser(path_to_file);
 
 //funcion f.s para leer archivo.md
 
-const links = (path) =>{//llamamos la variable que contiene la ruta
+const links = (path) =>{   //llamamos la variable que contiene la ruta
   if(pathNode.extname(path) != ".md"){//El método path.extname () devuelve la extensión de una ruta de archivo. entonces si es distinto a md tira error
     console.log("Es archivo pero no .md")  
  }else{
@@ -99,6 +102,7 @@ const links = (path) =>{//llamamos la variable que contiene la ruta
 }
 
 }
+
    
 
  
@@ -124,7 +128,11 @@ const links = (path) =>{//llamamos la variable que contiene la ruta
       });
       
         
-      });
+      })
+      .catch(err=>{
+        console.log(err)
+
+      })
   };   
    getMdFilehound();
   
@@ -188,17 +196,14 @@ const mdLinks = (path, options) => {
                        resolve(links(path))
 
                      }
-               
-                     links(path)
-                      .then(res=>{
-                         resolve(linkValidate(res)||linkStats(res));
+                    })
+                     .catch(err=>{
+                       console.log(err);
 
-                      })
-                      .catch(err=>{
-                        reject(err);
-                      })
+                    })
+               
                      
-                 })
+                
 
             
            

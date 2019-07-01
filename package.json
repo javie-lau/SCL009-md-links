@@ -1,31 +1,25 @@
 {
-  "name": "md-links",
+  "name": "mdlinks",
   "version": "0.1.0",
   "dependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.4.4",
-    "babel-core": "^6.26.3",
     "babel-jest": "^24.8.0",
     "chalk": "^2.4.2",
     "eslint-plugin-jest": "^22.7.1",
-    "express": "^4.17.1",
     "filehound": "^1.17.0",
-    "gh-pages": "^2.0.1",
-    "htmlhint": "^0.11.0",
     "jest": "^24.8.0",
     "markdown-link-extractor": "^1.2.1",
     "marked": "^0.6.2",
-    "node-fetch": "^2.6.0",
-    "save": "^2.4.0"
+    "md-links": "github:javie-lau/SCL009-md-links",
+    "node-fetch": "^2.6.0"
   },
-  "description": "[Markdown](https://es.wikipedia.org/wiki/Markdown) es un lenguaje de marcado\r ligero muy popular entre developers. Es usado en muchísimas plataformas que\r manejan texto plano (GitHub, foros, blogs, ...), y es muy común\r encontrar varios archivos en ese formato en cualquier tipo de repositorio\r (empezando por el tradicional `README.md`).",
+  "description": "Busca links de archivos .md y ve su calidad y estado",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "npm test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -35,9 +29,8 @@
     "md-link"
   ],
   "author": "laura silva",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/javie-lau/SCL009-md-links/issues"
+  "bin": {
+    "md-links": "index.js"
   },
   "homepage": "https://github.com/javie-lau/SCL009-md-links#readme"
 }
