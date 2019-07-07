@@ -1,4 +1,3 @@
-
 const pathNode= require("path");
 const fs = require("fs");//exportando fs
 const marked= require('marked');//exportando marked que es el que extrae link
@@ -6,6 +5,23 @@ const util = require('util');
 const fetch= require('node-fetch');
 let chalk = require('chalk');
 
+let path_to_file = process.argv[2];//ruta, process.argv llama lo que escribe el usuario en consola
+path_to_file = pathNode.resolve(path_to_file);// la vuelve absoluta
+
+let stats = false;
+let validate = false;
+
+if(process.argv[3]=== '--validate'||process.argv[4]=== '--validate'){
+  validate= true;
+}
+
+if(process.argv[3]=== '--stats'||process.argv[4]=== '--stats'){
+  stats=true;
+}
+ 
+
+  
+   
 /* me dice si la ruta es un directorio y isDirectory se tiene que convertir a asincrona a través de async*/ 
 const isDirectory = async path_to_file=>{ //async convierte inmediatamente en una promesa y await hace creer que esat haciendo un funcionamiento sincrono 
   try {
@@ -17,6 +33,8 @@ const isDirectory = async path_to_file=>{ //async convierte inmediatamente en un
   }
 
   }
+
+
 //funcion f.s para leer archivo.md
 
 const links = (path) =>{   //llamamos la variable que contiene la ruta
@@ -95,7 +113,7 @@ const links = (path) =>{   //llamamos la variable que contiene la ruta
     })
   };  
  
-   
+   /**valida los link con status de fetch */
   
    function linkValidate(links){
      let status =[];
@@ -141,84 +159,15 @@ const links = (path) =>{   //llamamos la variable que contiene la ruta
         
 
     }
-    /** aqui llamo a la funcion general md-link, convierto en promesas el resto me queda la duda
-   *  con option ya que nose donde se usa, me falta hacer los export y los test.
-   * 
-   */
-         
-  const mdLinks = (path, options) => {
-    console.log(options);
-    return new Promise((resolve, reject)=>{
-         isDirectory(path)
-              .then(res=>{
-                   let isDir = res;
-                   if(isDir){
-                        console.log("directorio")
-                       getMdFilehound(path)
-                        .then(res =>{
-                         
-                             if(options.stats===true && options.validate===true){
-                            resolve(statsValidate(res))
-
-                             }
-                             if(options.stats===true){
-                               resolve(linkStats(res))
-                             }
-                             else if(options.validate===true){
-                               resolve(linkValidate(res))
-                             } else {
-                              console.log(res)
-                             }
-                            })
-                          }
-                          
-                   if(isDir===false){
-                         console.log("archivo");
-                         links(path)
-                         .then(res=>{
-                           console.log(res);
-                          if(options.stats===true && options.validate===true){
-                            resolve(statsValidate(res))
-
-                             }
-                             if(options.stats===true){
-                               resolve(linkStats(res))
-                             }
-                             else if(options.validate===true){
-                               resolve(linkValidate(res))
-                             } else {
-                              console.log(res)
-                             }
-
-                         })
-  
-                       }
-                      })
-                   
-                       .catch(err=>{
-                         reject(err);
-  
-                      })
-                 
-      
-   
-
-   
-                    
-})
-  }
-  mdLinks(path_to_file,options);
-      
-     //mdLink.mdLinks;  
-  
   
    module.exports = {
-        isDirectory,
-        links,
-        getMdFilehound,
-        linkValidate,
-        linkStats,
-        statsValidate,       
-        mdLinks
+     isDirectory,
+     links,
+     getMdFilehound,
+     linkValidate,
+     linkStats,
+     statsValidate
+        
+        
      }
      
